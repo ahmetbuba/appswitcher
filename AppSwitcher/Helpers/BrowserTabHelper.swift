@@ -70,15 +70,6 @@ enum BrowserTabHelper {
             """)
         case "com.google.Chrome":
             runScript("""
-            tell application "System Events"
-                tell process "Google Chrome"
-                    repeat with w in windows
-                        try
-                            set value of attribute "AXMinimized" of w to false
-                        end try
-                    end repeat
-                end tell
-            end tell
             tell application "Google Chrome"
                 if (count windows) = 0 then
                     make new window
@@ -87,6 +78,7 @@ enum BrowserTabHelper {
                         make new tab
                     end tell
                 end if
+                activate
             end tell
             """)
         case "com.googlecode.iterm2":
@@ -162,18 +154,10 @@ enum BrowserTabHelper {
 
     private static func switchChromeTab(windowIndex: Int, tabIndex: Int) {
         runScript("""
-        tell application "System Events"
-            tell process "Google Chrome"
-                repeat with w in windows
-                    try
-                        set value of attribute "AXMinimized" of w to false
-                    end try
-                end repeat
-            end tell
-        end tell
         tell application "Google Chrome"
             set active tab index of window \(windowIndex) to \(tabIndex)
             set index of window \(windowIndex) to 1
+            activate
         end tell
         """)
     }
