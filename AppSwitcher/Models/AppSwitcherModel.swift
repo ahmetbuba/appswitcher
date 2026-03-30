@@ -6,13 +6,11 @@ final class AppSwitcherModel: ObservableObject {
 
     func refresh() {
         let hiddenStore = HiddenAppsStore.shared
-        var seenBundleIDs = Set<String>()
         apps = NSWorkspace.shared.runningApplications
             .filter { $0.activationPolicy == .regular && $0.localizedName != nil }
             .filter { nsApp in
                 guard let bundleID = nsApp.bundleIdentifier else { return true }
-                if hiddenStore.isHidden(bundleID) { return false }
-                return seenBundleIDs.insert(bundleID).inserted
+                return !hiddenStore.isHidden(bundleID)
             }
             .map { nsApp in
                 let pid = nsApp.processIdentifier
@@ -32,14 +30,30 @@ final class AppSwitcherModel: ObservableObject {
     }
 
     func activate(_ app: RunningApp) {
-        app.nsApp.activate(options: .activateIgnoringOtherApps)
+        let nsApp = app.nsApp
+        if let bundleID = nsApp.bundleIdentifier {
+            DispatchQueue.global().async {
+                NSAppleScript(source: "tell application id \"\(bundleID)\" to reopen")?.executeAndReturnError(nil)
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            nsApp.activate(options: .activateIgnoringOtherApps)
+        }
     }
 
     func focusItem(_ item: WindowItem, in app: RunningApp) {
         if item.isBrowserTab {
             BrowserTabHelper.switchToTab(item, app: app.nsApp)
         } else {
-            AccessibilityHelper.focusWindow(item, app: app.nsApp)
+            let nsApp = app.nsApp
+            if let bundleID = nsApp.bundleIdentifier {
+                DispatchQueue.global().async {
+                    NSAppleScript(source: "tell application id \"\(bundleID)\" to reopen")?.executeAndReturnError(nil)
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                AccessibilityHelper.focusWindow(item, app: nsApp)
+            }
         }
     }
 }
