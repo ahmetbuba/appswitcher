@@ -1,0 +1,30 @@
+name: AppSwitcher
+options:
+  bundleIdPrefix: com.appswitcher
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    SYMROOT: build
+
+targets:
+  AppSwitcher:
+    type: application
+    platform: macOS
+    sources:
+      - AppSwitcher
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.appswitcher.AppSwitcher
+        INFOPLIST_FILE: AppSwitcher/Info.plist
+        CODE_SIGN_ENTITLEMENTS: AppSwitcher/AppSwitcher.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+    entitlements:
+      path: AppSwitcher/AppSwitcher.entitlements
