@@ -22,6 +22,8 @@ struct AppListView: View {
     @State private var selectedSubIndex = 0
     @State private var showingHidden = false
     @State private var keyMonitor: Any?
+    @State private var axGranted = AccessibilityHelper.isAccessibilityGranted()
+    @State private var axTimer: Timer?
 
     private var isSubNavActive: Bool { expandedAppIndex != nil }
 
@@ -149,7 +151,7 @@ struct AppListView: View {
                     }
                 }
 
-                if !AccessibilityHelper.isAccessibilityGranted() {
+                if !axGranted {
                     Divider().opacity(0.4)
                     HStack(spacing: 6) {
                         Image(systemName: "exclamationmark.triangle.fill")
@@ -159,7 +161,10 @@ struct AppListView: View {
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                         Spacer()
-                        Button("Allow") { AccessibilityHelper.requestAccessibilityPermission() }
+                        Button("Allow") {
+                            AccessibilityHelper.requestAccessibilityPermission()
+                            startAxPolling()
+                        }
                             .font(.system(size: 11, weight: .medium))
                             .buttonStyle(.plain)
                             .foregroundColor(.accentColor)
@@ -176,13 +181,31 @@ struct AppListView: View {
             model.refresh()
             selectedIndex = 0
             startKeyMonitor()
+            axGranted = AccessibilityHelper.isAccessibilityGranted()
+            if !axGranted { startAxPolling() }
         }
         .onDisappear {
             stopKeyMonitor()
+            axTimer?.invalidate()
+            axTimer = nil
         }
         .onChange(of: searchText) { _ in
             selectedIndex = 0
             expandedAppIndex = nil
+        }
+    }
+
+    // MARK: - Accessibility polling
+
+    private func startAxPolling() {
+        axTimer?.invalidate()
+        axTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if AccessibilityHelper.isAccessibilityGranted() {
+                axGranted = true
+                axTimer?.invalidate()
+                axTimer = nil
+                model.refresh()
+            }
         }
     }
 

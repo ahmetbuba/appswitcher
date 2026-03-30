@@ -191,6 +191,7 @@ enum BrowserTabHelper {
             tell window \(windowIndex)
                 select tab \(tabIndex)
             end tell
+            activate
         end tell
         """)
     }
