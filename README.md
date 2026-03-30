@@ -26,7 +26,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 
 | Menu bar popover | Spotlight panel |
 |---|---|
-| 340px compact popover below menu bar icon | 680px panel centered on screen |
+| ![Menu bar popover](screenshots/popover.png) | ![Spotlight panel](screenshots/spotlight.png) |
 
 ---
 
