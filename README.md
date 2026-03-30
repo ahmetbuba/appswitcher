@@ -12,7 +12,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 - **Cmd+Shift+Space** — open a large Spotlight-style panel centered on screen
 - **Search** — type to filter apps instantly
 - **Keyboard navigation** — arrow keys, Enter, Escape, no mouse required
-- **Window sub-lists** — expand any app to see and focus individual windows
+- **Window sub-lists** — apps with multiple windows show an expand arrow; single-window apps activate directly with no sub-list
 - **Browser tab sub-lists** — Safari, Chrome, and iTerm2 show open tabs; open a New Tab directly from the list
 - **Firefox** — window titles listed via Accessibility API
 - **Hide apps** — right-click any app to hide it from the list; manage hidden apps via the eye-slash toggle
@@ -92,10 +92,11 @@ cat > AppSwitcher/AppSwitcher.entitlements << 'EOF'
 EOF
 
 # Build
-xcodebuild -project AppSwitcher.xcodeproj -scheme AppSwitcher -configuration Debug build
+xcodebuild -project AppSwitcher.xcodeproj -scheme AppSwitcher -configuration Release build
 
-# Install
-cp -R build/Debug/AppSwitcher.app /Applications/AppSwitcher.app
+# Install (remove old binary first to avoid stale permissions state)
+rm -rf /Applications/AppSwitcher.app
+cp -R build/Release/AppSwitcher.app /Applications/AppSwitcher.app
 open /Applications/AppSwitcher.app
 ```
 
@@ -161,7 +162,7 @@ AppSwitcher/
 
 - Firefox has no AppleScript tab support — window titles are shown instead of tab titles
 - The app is not notarized — macOS Gatekeeper will block it on first launch (see Installation above)
-- Accessibility permission is tied to the app's code signature — rebuilding from source requires re-granting the permission in System Settings
+- Accessibility and Automation permissions are tied to the app's code signature — rebuilding from source requires re-granting both permissions in System Settings
 - Global hotkey (Cmd+Shift+Space) may conflict with other apps using the same shortcut
 
 ---
