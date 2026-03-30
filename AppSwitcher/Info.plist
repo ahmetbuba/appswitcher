@@ -24,5 +24,7 @@
     <string>AppSwitcher needs accessibility access to read window titles and switch between windows.</string>
     <key>NSAppleEventsUsageDescription</key>
     <string>AppSwitcher needs automation access to read browser tabs in Safari, Chrome, and Firefox.</string>
+    <key>LSMultipleInstancesProhibited</key>
+    <true/>
 </dict>
 </plist>
