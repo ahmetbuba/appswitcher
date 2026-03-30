@@ -52,15 +52,15 @@ A lightweight macOS menu bar app for switching between running applications, win
 
 ## Installation
 
-### Option 1 — Pre-built binary
+### Option 1 — DMG Installer
 
-Download `AppSwitcher.app` from the [`binaries/`](binaries/) folder, move it to `/Applications`, and open it.
+1. Download [`AppSwitcher.dmg`](binaries/AppSwitcher.dmg) from the `binaries/` folder
+2. Open the DMG
+3. Drag **AppSwitcher** into the **Applications** folder
+4. Eject the DMG and launch AppSwitcher from Applications
 
-macOS may show a security warning on first launch since the app is not notarized. To open it:
-
-```
-System Settings → Privacy & Security → Open Anyway
-```
+> macOS may show a security warning on first launch since the app is not notarized. To allow it:
+> `System Settings → Privacy & Security → Open Anyway`
 
 ### Option 2 — Build from source
 
