@@ -224,7 +224,7 @@ struct AppListView: View {
                 if !isSubNavActive {
                     guard selectedIndex < list.count else { return nil }
                     let app = list[selectedIndex]
-                    if !app.windows.isEmpty {
+                    if app.windows.filter({ !$0.isNewTab }).count > 1 {
                         withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                             expandedAppIndex = selectedIndex
                             selectedSubIndex = 0
@@ -273,7 +273,13 @@ struct AppListView: View {
                     NotificationCenter.default.post(name: .closePopover, object: nil)
                 } else {
                     guard !list.isEmpty, selectedIndex < list.count else { return nil }
-                    model.activate(list[selectedIndex])
+                    let app = list[selectedIndex]
+                    let realWindows = app.windows.filter { !$0.isNewTab }
+                    if realWindows.count == 1 {
+                        model.focusItem(realWindows[0], in: app)
+                    } else {
+                        model.activate(app)
+                    }
                     NotificationCenter.default.post(name: .closePopover, object: nil)
                 }
                 return nil

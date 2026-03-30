@@ -9,7 +9,7 @@ struct AppRowView: View {
     @ObservedObject private var hiddenStore = HiddenAppsStore.shared
     @State private var isHovered = false
 
-    private var hasSubItems: Bool { !app.windows.isEmpty }
+    private var hasSubItems: Bool { displayCount > 1 }
 
     // Tab/window count excluding the "New Tab" sentinel
     private var displayCount: Int {
@@ -20,7 +20,11 @@ struct AppRowView: View {
         VStack(spacing: 0) {
             // Main row
             Button(action: {
-                if hasSubItems {
+                let realWindows = app.windows.filter { !$0.isNewTab }
+                if realWindows.count == 1 {
+                    model.focusItem(realWindows[0], in: app)
+                    closePopover()
+                } else if hasSubItems {
                     withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                         isExpanded.toggle()
                     }
