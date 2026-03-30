@@ -22,20 +22,24 @@ final class HotkeyManager {
             return noErr
         }, 1, &eventSpec, Unmanaged.passUnretained(self).toOpaque(), &eventHandlerRef)
 
-        // Cmd+Shift+Space: keyCode 49, modifiers = cmdKey | shiftKey
-        let hotkeyID = EventHotKeyID(signature: OSType(0x41535748), id: 1) // 'ASWH'
-        RegisterEventHotKey(UInt32(kVK_Space),
-                            UInt32(cmdKey | shiftKey),
-                            hotkeyID,
-                            GetApplicationEventTarget(),
-                            0,
-                            &hotKeyRef)
+        registerHotKey()
+    }
+
+    /// Call after the user saves new hotkey settings.
+    func reregister() {
+        if let ref = hotKeyRef { UnregisterEventHotKey(ref); hotKeyRef = nil }
+        registerHotKey()
     }
 
     func unregister() {
-        if let ref = hotKeyRef {
-            UnregisterEventHotKey(ref)
-            hotKeyRef = nil
-        }
+        if let ref = hotKeyRef { UnregisterEventHotKey(ref); hotKeyRef = nil }
+        if let ref = eventHandlerRef { RemoveEventHandler(ref); eventHandlerRef = nil }
+    }
+
+    private func registerHotKey() {
+        let settings = HotkeySettings.shared
+        let hotkeyID = EventHotKeyID(signature: OSType(0x41535748), id: 1)
+        RegisterEventHotKey(settings.keyCode, settings.modifiers, hotkeyID,
+                            GetApplicationEventTarget(), 0, &hotKeyRef)
     }
 }

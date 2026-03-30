@@ -17,6 +17,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 - **Firefox** — window titles listed via Accessibility API
 - **Hide apps** — right-click any app to hide it from the list; manage hidden apps via the eye-slash toggle
 - **Minimized window support** — switching to a tab automatically unminimizes the browser window
+- **Configurable hotkey** — right-click the menu bar icon → Preferences to record a custom global shortcut
 - No Dock icon, no background resource usage beyond what's needed
 
 ---
@@ -39,6 +40,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 | `Enter` | Activate selected app or sub-item |
 | `Escape` | Collapse sub-items, or close panel |
 | `Cmd+Shift+Space` | Toggle Spotlight panel (global, works in any app) |
+| Right-click menu bar icon | Open context menu (Preferences, Quit) |
 
 ---
 
@@ -129,11 +131,13 @@ AppSwitcher/
     ├── Models/
     │   ├── RunningApp.swift           — data models
     │   ├── AppSwitcherModel.swift     — app list state
-    │   └── HiddenAppsStore.swift      — hidden apps persistence
+    │   ├── HiddenAppsStore.swift      — hidden apps persistence
+    │   └── HotkeySettings.swift      — hotkey persistence & display helpers
     ├── Views/
     │   ├── AppListView.swift          — main list view + keyboard handling
     │   ├── AppRowView.swift           — individual app row
-    │   └── SubItemRowView.swift       — window / tab sub-item row
+    │   ├── SubItemRowView.swift       — window / tab sub-item row
+    │   └── PreferencesView.swift      — hotkey recorder UI
     └── Helpers/
         ├── AccessibilityHelper.swift  — AXUIElement window listing & focusing
         ├── BrowserTabHelper.swift     — AppleScript tab listing & switching
