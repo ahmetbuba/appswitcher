@@ -144,6 +144,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             panel.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
+            NotificationCenter.default.post(name: .panelDidOpen, object: nil)
             spotlightMouseMonitor = NSEvent.addGlobalMonitorForEvents(
                 matching: [.leftMouseDown, .rightMouseDown]
             ) { [weak self] _ in self?.closeSpotlightPanel() }
@@ -162,6 +163,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             popover.contentViewController?.view.window?.makeKey()
+            NotificationCenter.default.post(name: .panelDidOpen, object: nil)
         }
     }
 

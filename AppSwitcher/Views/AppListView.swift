@@ -193,6 +193,9 @@ struct AppListView: View {
             selectedIndex = 0
             expandedAppIndex = nil
         }
+        .onReceive(NotificationCenter.default.publisher(for: .panelDidOpen)) { _ in
+            model.refresh()
+        }
     }
 
     // MARK: - Accessibility polling

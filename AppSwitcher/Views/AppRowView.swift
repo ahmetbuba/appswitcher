@@ -121,4 +121,5 @@ struct AppRowView: View {
 
 extension Notification.Name {
     static let closePopover = Notification.Name("com.appswitcher.closePopover")
+    static let panelDidOpen = Notification.Name("com.appswitcher.panelDidOpen")
 }

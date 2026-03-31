@@ -4,6 +4,23 @@ import AppKit
 final class AppSwitcherModel: ObservableObject {
     @Published var apps: [RunningApp] = []
 
+    private var observers: [NSObjectProtocol] = []
+
+    init() {
+        let nc = NSWorkspace.shared.notificationCenter
+        for name in [NSWorkspace.didLaunchApplicationNotification,
+                     NSWorkspace.didTerminateApplicationNotification] {
+            let obs = nc.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                Task { @MainActor [weak self] in self?.refresh() }
+            }
+            observers.append(obs)
+        }
+    }
+
+    deinit {
+        observers.forEach { NSWorkspace.shared.notificationCenter.removeObserver($0) }
+    }
+
     func refresh() {
         let hiddenStore = HiddenAppsStore.shared
         apps = NSWorkspace.shared.runningApplications
