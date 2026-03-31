@@ -17,6 +17,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 - **Firefox** — window titles listed via Accessibility API
 - **Hide apps** — right-click any app to hide it from the list; manage hidden apps via the eye-slash toggle
 - **Minimized window support** — switching to a tab automatically unminimizes the browser window
+- **Window Layouts** — save named window arrangements and restore them in one click; layouts are tied to your monitor configuration so switching between home, office, and other setups is instant
 - **Configurable hotkey** — right-click the menu bar icon → Preferences to record a custom global shortcut
 - No Dock icon, no background resource usage beyond what's needed
 
@@ -24,9 +25,9 @@ A lightweight macOS menu bar app for switching between running applications, win
 
 ## Screenshots
 
-| Menu bar popover | Spotlight panel |
-|---|---|
-| ![Menu bar popover](screenshots/popover.png) | ![Spotlight panel](screenshots/spotlight.png) |
+| Menu bar popover | Spotlight panel | Window Layouts |
+|---|---|---|
+| ![Menu bar popover](screenshots/popover.png) | ![Spotlight panel](screenshots/spotlight.png) | ![Window Layouts](screenshots/layouts.png) |
 
 ---
 
@@ -40,7 +41,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 | `Enter` | Activate selected app or sub-item |
 | `Escape` | Collapse sub-items, or close panel |
 | `Cmd+Shift+Space` | Toggle Spotlight panel (global, works in any app) |
-| Right-click menu bar icon | Open context menu (Preferences, Quit) |
+| Right-click menu bar icon | Open context menu (Layouts, Preferences, Quit) |
 
 ---
 
@@ -133,16 +134,19 @@ AppSwitcher/
     │   ├── RunningApp.swift           — data models
     │   ├── AppSwitcherModel.swift     — app list state
     │   ├── HiddenAppsStore.swift      — hidden apps persistence
-    │   └── HotkeySettings.swift      — hotkey persistence & display helpers
+    │   ├── HotkeySettings.swift       — hotkey persistence & display helpers
+    │   └── WindowLayoutStore.swift    — layout profiles & monitor fingerprinting
     ├── Views/
     │   ├── AppListView.swift          — main list view + keyboard handling
     │   ├── AppRowView.swift           — individual app row
     │   ├── SubItemRowView.swift       — window / tab sub-item row
-    │   └── PreferencesView.swift      — hotkey recorder UI
+    │   ├── PreferencesView.swift      — hotkey recorder UI
+    │   └── LayoutsView.swift          — window layouts management UI
     └── Helpers/
         ├── AccessibilityHelper.swift  — AXUIElement window listing & focusing
         ├── BrowserTabHelper.swift     — AppleScript tab listing & switching
-        └── HotkeyManager.swift        — Carbon global hotkey registration
+        ├── HotkeyManager.swift        — Carbon global hotkey registration
+        └── LayoutEngine.swift         — AX window geometry capture & restore
 ```
 
 ---

@@ -45,4 +45,40 @@ enum AccessibilityHelper {
         AXUIElementSetAttributeValue(element, kAXFocusedAttribute as CFString, true as CFTypeRef)
         AXUIElementPerformAction(element, kAXRaiseAction as CFString)
     }
+
+    // MARK: - Layout geometry helpers
+
+    static func readCGPoint(_ attribute: String, from element: AXUIElement) -> CGPoint? {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, attribute as CFString, &ref) == .success,
+              ref != nil else { return nil }
+        let axVal = ref as! AXValue
+        var point = CGPoint.zero
+        guard AXValueGetValue(axVal, .cgPoint, &point) else { return nil }
+        return point
+    }
+
+    static func readCGSize(_ attribute: String, from element: AXUIElement) -> CGSize? {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, attribute as CFString, &ref) == .success,
+              ref != nil else { return nil }
+        let axVal = ref as! AXValue
+        var size = CGSize.zero
+        guard AXValueGetValue(axVal, .cgSize, &size) else { return nil }
+        return size
+    }
+
+    @discardableResult
+    static func writeCGPoint(_ point: CGPoint, attribute: String, to element: AXUIElement) -> AXError {
+        var mutable = point
+        guard let axVal = AXValueCreate(.cgPoint, &mutable) else { return .failure }
+        return AXUIElementSetAttributeValue(element, attribute as CFString, axVal)
+    }
+
+    @discardableResult
+    static func writeCGSize(_ size: CGSize, attribute: String, to element: AXUIElement) -> AXError {
+        var mutable = size
+        guard let axVal = AXValueCreate(.cgSize, &mutable) else { return .failure }
+        return AXUIElementSetAttributeValue(element, attribute as CFString, axVal)
+    }
 }

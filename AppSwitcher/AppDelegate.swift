@@ -8,12 +8,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var spotlightPanel: NSPanel?
     private var spotlightMouseMonitor: Any?
     private var preferencesWindow: NSWindow?
+    private var layoutsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
         setupPopover()
         setupSpotlightPanel()
         setupHotkey()
+        _ = WindowLayoutStore.shared   // start screen-change observer early
     }
 
     // MARK: - Status Bar
@@ -40,12 +42,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showContextMenu() {
         let menu = NSMenu()
+        menu.addItem(withTitle: "Layouts…", action: #selector(openLayouts), keyEquivalent: "l")
         menu.addItem(withTitle: "Preferences…", action: #selector(openPreferences), keyEquivalent: ",")
         menu.addItem(.separator())
         menu.addItem(withTitle: "Quit AppSwitcher", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
         statusItem?.menu = nil
+    }
+
+    @objc private func openLayouts() {
+        if let w = layoutsWindow, w.isVisible {
+            w.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Window Layouts"
+        window.contentViewController = NSHostingController(rootView: LayoutsView())
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        layoutsWindow = window
     }
 
     @objc private func openPreferences() {
