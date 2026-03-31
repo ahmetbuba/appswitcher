@@ -57,7 +57,7 @@ A lightweight macOS menu bar app for switching between running applications, win
 
 ### Option 1 — DMG Installer
 
-1. Download [`AppSwitcher.dmg`](binaries/AppSwitcher.dmg) from the `binaries/` folder
+1. Download `AppSwitcher.dmg` from the [latest release](https://github.com/ahmetbuba/appswitcher/releases/latest)
 2. Open the DMG
 3. Drag **AppSwitcher** into the **Applications** folder
 4. Eject the DMG and launch AppSwitcher from Applications
